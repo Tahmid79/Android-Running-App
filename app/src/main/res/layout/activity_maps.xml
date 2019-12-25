@@ -43,8 +43,8 @@
 
     <TextView
         android:id="@+id/distMet"
-        android:layout_width="120dp"
-        android:layout_height="46dp"
+        android:layout_width="168dp"
+        android:layout_height="118dp"
         android:layout_marginTop="60dp"
         android:text="TextView"
         android:textSize="24sp"

@@ -133,8 +133,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(recent));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
 
+            String reading  = Float.toString(Data.total_distance) + " metres " + Double.toString(Data.duration) + " seconds" ;
 
-            distmet.setText(Float.toString(Data.total_distance));
+            distmet.setText(reading);
 
         }
     }

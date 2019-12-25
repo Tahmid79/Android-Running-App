@@ -64,6 +64,7 @@ public class LocationService extends Service {
 
         createLocCallBack();
 
+
     }
 
     public void createLocCallBack(){
@@ -88,9 +89,17 @@ public class LocationService extends Service {
                 Data.cord.add(new LatLng(recent.getLatitude() ,  recent.getLongitude()) ) ;
                 Data.loc.add(recent) ;
 
+                distanceCalc();
+
+
+                long t1 = Data.loc.get(0).getElapsedRealtimeNanos() ;
+                long t2 = Data.loc.get(Data.loc.size()-1).getElapsedRealtimeNanos() ;
+                double time =  (t2 - t1)/1e9 ;
+
+                Data.duration = time ;
+
                 mNotificationManager.notify(NTF_ID ,  getNotification());
 
-                distanceCalc();
             }
         };
 

@@ -12,6 +12,7 @@ public class Data {
     public static ArrayList<Location> loc  ;
 
     public static float total_distance ;
+    public static double duration ;
 
 
 

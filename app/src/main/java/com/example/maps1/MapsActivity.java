@@ -121,7 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
             //distanceCalc();
-
             distmet.setText(Float.toString(Data.total_distance));
 
         }

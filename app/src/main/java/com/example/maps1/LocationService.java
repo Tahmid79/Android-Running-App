@@ -77,6 +77,7 @@ public class LocationService extends Service {
                     return;
                 }
 
+
                 Location recent = locationResult.getLastLocation() ;
                 mCurrentLocation = recent  ;
 
@@ -184,6 +185,10 @@ public class LocationService extends Service {
                 locationCallback , Looper.getMainLooper() ) ;
     }
 
+    public void stopLocationUpdates(){
+        fusedLocationClient.removeLocationUpdates(locationCallback) ;
+
+    }
 
 
     @Nullable

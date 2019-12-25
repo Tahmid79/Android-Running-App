@@ -9,50 +9,51 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="389dp"
-        android:layout_height="519dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="48dp"
-        map:layout_constraintBottom_toTopOf="@+id/button"
+        android:layout_width="381dp"
+        android:layout_height="501dp"
+        android:layout_marginTop="16dp"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.466"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+        map:layout_constraintTop_toTopOf="parent"
+        map:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="49dp"
-        android:text="Button"
-        map:layout_constraintBottom_toTopOf="@+id/button2"
+        android:layout_marginBottom="100dp"
+        android:onClick="clearMap"
+        android:text="Stop"
+        map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toStartOf="@+id/distMet"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toBottomOf="@+id/map" />
+        map:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="67dp"
-        android:text="Button"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="100dp"
+        android:onClick="startTracking"
+        android:text="Start"
         map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toEndOf="@+id/distMet"
-        map:layout_constraintTop_toBottomOf="@+id/button" />
+        map:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/distMet"
         android:layout_width="120dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="37dp"
-        android:layout_marginEnd="54dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="60dp"
         android:text="TextView"
         android:textSize="24sp"
-        map:layout_constraintEnd_toStartOf="@+id/button2"
-        map:layout_constraintStart_toEndOf="@+id/button"
-        map:layout_constraintTop_toBottomOf="@+id/map" />
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.498"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toBottomOf="@+id/map"
+        map:layout_constraintVertical_bias="0.027" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

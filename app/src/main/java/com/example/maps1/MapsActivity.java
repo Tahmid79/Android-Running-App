@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -97,6 +98,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void clearMap(View view){
+        mService.stopLocationUpdates();
+        mMap.clear();
+        Data.total_distance = 0 ;
+        Data.loc = new ArrayList<>() ;
+        Data.cord = new ArrayList<>() ;
+        distmet.setText("0");
+    }
+
+    public void startTracking(View view){
+        mService.startLocationUpdates();
+    }
+
     public class Receiver extends BroadcastReceiver{
 
         @Override
@@ -120,40 +134,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
 
 
-            //distanceCalc();
             distmet.setText(Float.toString(Data.total_distance));
 
         }
-    }
-
-    public void distanceCalc(){
-
-        int len = cord.size() ;
-
-        float [] results  = new float[3] ;
-
-        float total_distance = 0 ;
-
-        for (int i =0 ; i< len-1 ; i++){
-
-            LatLng fst = cord.get(i);
-            LatLng snd = cord.get(i+1) ;
-
-            Location.distanceBetween(
-                    fst.latitude , fst.longitude,
-                    snd.latitude , snd.longitude ,
-                    results
-
-            );
-
-            total_distance = total_distance+results[0] ;
-
-        }
-
-        TextView distmet = (TextView)findViewById(R.id.distMet) ;
-
-        distmet.setText(Float.toString(total_distance));
-
     }
 
 

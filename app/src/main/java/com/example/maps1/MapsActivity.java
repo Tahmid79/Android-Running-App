@@ -1,6 +1,7 @@
 package com.example.maps1;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,20 +47,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import com.example.maps1.R.layout.*  ;
+
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback    {
 
     public GoogleMap mMap;
-    public FusedLocationProviderClient fusedLocationClient ;
+
     public int REQUEST_CHECK_SETTINGS = 1 ;
 
     Location mCurrentLocation ;
     boolean  requestingLocationUpdates ;
 
-
-    LocationRequest locationRequest ;
-    LocationCallback locationCallback ;
 
     ArrayList<LatLng> cord =  new ArrayList<>() ;
 
@@ -73,8 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       // requestLocationPermission();
-        //handleBroadcast();
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -115,43 +114,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(recent));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
 
+            distanceCalc();
 
 
         }
     }
 
-    public void handleBroadcast(){
+    public void distanceCalc(){
 
-        IntentFilter filter =  new IntentFilter();
-        filter.addAction(LocationService.ACTION_BROADCAST);
-        filter.addAction(LocationService.EXTRA_LOCATION) ;
+        int len = cord.size() ;
 
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
+        float [] results  = new float[3] ;
 
+        float total_distance = 0 ;
 
+        for (int i =0 ; i< len-1 ; i++){
 
-               Location lrecent = intent.getParcelableExtra(LocationService.EXTRA_LOCATION) ;
-               LatLng recent =  new LatLng(lrecent.getLatitude()  ,lrecent.getLongitude() ) ;
-               cord.add(recent) ;
+            LatLng fst = cord.get(i);
+            LatLng snd = cord.get(i+1) ;
 
-                PolylineOptions options = new PolylineOptions();
-                options.addAll(cord);
-                options.width(8);
-                options.color(Color.GREEN);
+            Location.distanceBetween(
+                    fst.latitude , fst.longitude,
+                    snd.latitude , snd.longitude ,
+                    results
 
+            );
 
-                mMap.addPolyline(options);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(recent));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
+            total_distance = total_distance+results[0] ;
 
+        }
 
-
-            }
-        };
+        TextView distmet = (TextView)findViewById(R.id.distMet) ;
+        distmet.setText(Float.toString(total_distance));
 
     }
+
+
 
     @Override
     protected void onStart() {
@@ -192,130 +190,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    protected void onCreate1(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        createLocationRequest();
-
-        fusedLocationClient  = LocationServices.getFusedLocationProviderClient(this) ;
-
-        fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-
-                mCurrentLocation = location  ;
-
-            }
-        }) ;
-
-
-
-        locationCallback  = new LocationCallback(){
-
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-
-                if (locationResult == null) {
-                    return;
-                } else
-
-                    for (Location location : locationResult.getLocations()) {
-
-                        //Update UI
-                        mCurrentLocation = location ;
-                        LatLng crd = new LatLng(location.getLatitude(), location.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(crd).title("Current Location"));
-
-                        cord.add(crd);
-                    }
-
-                Location recent = locationResult.getLastLocation() ;
-                LatLng last = new LatLng(recent.getLatitude(), recent.getLongitude());
-
-                PolylineOptions options = new PolylineOptions();
-                options.addAll(cord);
-                options.width(8);
-                options.color(Color.GREEN);
-
-
-                mMap.addPolyline(options);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(last));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
-
-
-        }
-
-        } ;
-
-
-
-    }
-
-    protected void createLocationRequest(){
-
-        locationRequest = LocationRequest.create() ;
-        locationRequest.setInterval(5000)  ;
-        locationRequest.setFastestInterval(1000) ;
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY) ;
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest) ;
-
-        SettingsClient client  = LocationServices.getSettingsClient(this) ;
-
-        Task<LocationSettingsResponse> task  = client.checkLocationSettings(builder.build()) ;
-
-        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
-            startLocationUpdates();
-
-            }
-        });
-
-        task.addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if ( e instanceof ResolvableApiException){
-
-                    try{
-                        ResolvableApiException resolvableApiException = (ResolvableApiException) e ;
-
-                      resolvableApiException.startResolutionForResult(MapsActivity.this ,
-                                REQUEST_CHECK_SETTINGS);
-
-
-
-                    }catch (IntentSender.SendIntentException sendEx){
-
-                    }
-
-                }
-
-            }
-        }) ;
-
-
-    }
-
-
-
-    private void startLocationUpdates(){
-        fusedLocationClient.requestLocationUpdates(locationRequest ,
-                locationCallback , Looper.getMainLooper() ) ;
-    }
 
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -324,28 +204,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng hamburg = new LatLng(53.558, 9.927)  ;
-        LatLng kiel = new LatLng(53.551, 9.993) ;
-
-
-        Polyline polyline1 = mMap.addPolyline(new PolylineOptions().clickable(true).add(
-                new LatLng(-35.016, 143.321),
-                new LatLng(-34.747, 145.592),
-                new LatLng(-34.364, 147.891),
-                new LatLng(-33.501, 150.217),
-                new LatLng(-32.306, 149.248),
-                new LatLng(-32.491, 147.309)
-
-
-
-        ));
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
-        //mMap.addMarker(new MarkerOptions().position(hamburg).title("Hamburg") ) ;
-        //mMap.addMarker(new MarkerOptions().position(kiel).title("Kiel")) ;
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney , 4));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(5)  , 2000  ,null);
@@ -354,29 +217,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void requestLocationPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this ,  new String[]{
-
-                    Manifest.permission.ACCESS_FINE_LOCATION
-
-            }, REQUEST_CHECK_SETTINGS);
-
-
-        }
-
-        else {
-            //do if location already enabled
-
-            bindService( new Intent(this ,  LocationService.class)
-                    , mServiceConnection , Context.BIND_AUTO_CREATE ) ;
-
-            mService.startLocationUpdates();
-
-        }
-
-
-    }
 
     public void requestLocation(){
 
@@ -445,6 +285,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+
     ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -459,6 +301,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onServiceDisconnected(ComponentName name) {
             mService = null ;
             mBound = false ;
+
 
         }
     };

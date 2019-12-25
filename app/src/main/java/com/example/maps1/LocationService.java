@@ -26,7 +26,11 @@ import com.google.android.gms.maps.model.LatLng;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class LocationService extends Service {
 
@@ -96,8 +100,20 @@ public class LocationService extends Service {
                 long t2 = Data.loc.get(Data.loc.size()-1).getElapsedRealtimeNanos() ;
                 double time =  (t2 - t1)/1e9 ;
 
+                time = Math.round(time);
                 Data.duration = time ;
 
+                //Calendar cal = Calendar.getInstance();
+                //String dt =  cal.getTime().toString();
+
+               if(Data.cord.size() == 1) {
+                  // Date date = Calendar.getInstance().getTime();
+                   //SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                   //String formattedDate = df.format(date);
+                    String formattedDate = getDateTime() ;
+                   Toast.makeText(getApplicationContext(), formattedDate, Toast.LENGTH_LONG).show();
+                   Data.date = formattedDate ;
+               }
                 mNotificationManager.notify(NTF_ID ,  getNotification());
 
             }
@@ -134,7 +150,11 @@ public class LocationService extends Service {
 
     }
 
-
+    private String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 
    public Notification getNotification(){
 

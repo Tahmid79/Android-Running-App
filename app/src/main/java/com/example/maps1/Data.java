@@ -13,7 +13,7 @@ public class Data {
 
     public static float total_distance ;
     public static double duration ;
-
+    public static String date ;
 
 
 }

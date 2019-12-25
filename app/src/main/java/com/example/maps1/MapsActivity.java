@@ -200,18 +200,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
-
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney , 4));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(5)  , 2000  ,null);
-
-
     }
-
 
 
     public void requestLocation(){
@@ -265,7 +260,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(requestCode == REQUEST_CHECK_SETTINGS ) {
             //do if permission granted after prompt
 
-            mService.startLocationUpdates();
+            //mService.startLocationUpdates();
         }
     }
 
@@ -276,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(requestCode == REQUEST_CHECK_SETTINGS && resultCode==RESULT_OK ) {
             //do if permission granted after prompt
 
-            mService.startLocationUpdates();
+            //mService.startLocationUpdates();
         }
 
     }

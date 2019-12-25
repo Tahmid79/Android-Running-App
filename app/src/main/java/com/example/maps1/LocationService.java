@@ -11,6 +11,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -63,8 +64,6 @@ public class LocationService extends Service {
 
         createLocCallBack();
 
-
-
     }
 
     public void createLocCallBack(){
@@ -85,22 +84,52 @@ public class LocationService extends Service {
                 broadcast.putExtra(LocationService.EXTRA_LOCATION , mCurrentLocation) ;
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast) ;
 
-
+                Data.cord.add(new LatLng(recent.getLatitude() ,  recent.getLongitude()) ) ;
+                Data.loc.add(recent) ;
 
                 mNotificationManager.notify(NTF_ID ,  getNotification());
 
-
-
+                distanceCalc();
             }
         };
 
+    }
 
+    public void distanceCalc(){
+
+        int len = Data.cord.size() ;
+
+        float [] results  = new float[3] ;
+
+        float total_distance = 0 ;
+
+        for (int i =0 ; i< len-1 ; i++){
+
+            LatLng fst = Data.cord.get(i);
+            LatLng snd = Data.cord.get(i+1) ;
+
+            Location.distanceBetween(
+                    fst.latitude , fst.longitude,
+                    snd.latitude , snd.longitude ,
+                    results
+
+            );
+
+            total_distance = total_distance+results[0] ;
+
+        }
+
+        total_distance = Math.round(total_distance) ;
+        Data.total_distance = total_distance ;
 
     }
+
+
 
    public Notification getNotification(){
 
         Intent intent = new Intent(this , MapsActivity.class) ;
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP) ;
 
 
                 NotificationCompat.Builder builder =
@@ -114,7 +143,7 @@ public class LocationService extends Service {
        builder.setOngoing(true) ;
        builder.setPriority(Notification.PRIORITY_HIGH) ;
 
-       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT) ;
+       PendingIntent pendingIntent = PendingIntent.getActivity(this.getBaseContext(), 0,intent, PendingIntent.FLAG_CANCEL_CURRENT ) ;
        builder.setContentIntent(pendingIntent) ;
 
 
@@ -134,7 +163,6 @@ public class LocationService extends Service {
 
         return START_NOT_STICKY;
     }
-
 
 
     protected void createLocationRequest(){

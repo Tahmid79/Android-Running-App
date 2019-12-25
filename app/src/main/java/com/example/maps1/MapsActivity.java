@@ -69,11 +69,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public BroadcastReceiver receiver ;
 
     private static  final String TAG = "MyService" ;
+    TextView distmet ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Data.loc = new ArrayList<>();
+        Data.cord = new ArrayList<>() ;
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -90,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver ,
                filter);
 
+        distmet =  (TextView)findViewById(R.id.distMet) ;
 
     }
 
@@ -99,12 +103,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onReceive(Context context, Intent intent) {
 
 
-            Location lrecent = intent.getParcelableExtra(LocationService.EXTRA_LOCATION) ;
-            LatLng recent =  new LatLng(lrecent.getLatitude()  ,lrecent.getLongitude() ) ;
-            cord.add(recent) ;
+            //Location lrecent = intent.getParcelableExtra(LocationService.EXTRA_LOCATION) ;
+            //LatLng recent =  new LatLng(lrecent.getLatitude()  ,lrecent.getLongitude() ) ;
+            LatLng recent =  Data.cord.get(Data.cord.size()-1) ;
+            //cord.add(recent) ;
 
             PolylineOptions options = new PolylineOptions();
-            options.addAll(cord);
+            options.addAll(Data.cord);
             options.width(8);
             options.color(Color.GREEN);
 
@@ -114,8 +119,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(recent));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
 
-            distanceCalc();
 
+            //distanceCalc();
+
+            distmet.setText(Float.toString(Data.total_distance));
 
         }
     }
@@ -145,6 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         TextView distmet = (TextView)findViewById(R.id.distMet) ;
+
         distmet.setText(Float.toString(total_distance));
 
     }
@@ -177,6 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
 
+
         //this.registerReceiver(receiver , new IntentFilter( LocationService.ACTION_BROADCAST)) ;
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver ,
                 new IntentFilter( LocationService.ACTION_BROADCAST));
@@ -189,8 +198,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+      NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+      manager.cancelAll();
+        super.onDestroy();
+    }
 
     /**
      * Manipulates the map once available.

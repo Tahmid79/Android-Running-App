@@ -88,7 +88,6 @@ public class LocationService extends Service {
 
                 Intent broadcast = new Intent(LocationService.ACTION_BROADCAST);
                 broadcast.putExtra(LocationService.EXTRA_LOCATION , mCurrentLocation) ;
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast) ;
 
                 Data.cord.add(new LatLng(recent.getLatitude() ,  recent.getLongitude()) ) ;
                 Data.loc.add(recent) ;
@@ -111,10 +110,13 @@ public class LocationService extends Service {
                    //SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                    //String formattedDate = df.format(date);
                     String formattedDate = getDateTime() ;
-                   Toast.makeText(getApplicationContext(), formattedDate, Toast.LENGTH_LONG).show();
+                   //Toast.makeText(getApplicationContext(), formattedDate, Toast.LENGTH_LONG).show();
                    Data.date = formattedDate ;
                }
-                mNotificationManager.notify(NTF_ID ,  getNotification());
+
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast) ;
+
+               mNotificationManager.notify(NTF_ID ,  getNotification());
 
             }
         };

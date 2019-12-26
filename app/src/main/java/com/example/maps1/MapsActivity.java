@@ -126,7 +126,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void saveTrack(View view){
 
-        ContentValues values = new ContentValues() ;    //saves the track record in the database
+        ContentValues values = new ContentValues() ;
+        //saves the track record in the database
 
         values.put("duration" , Data.duration);
         values.put("date" ,  Data.date) ;
@@ -188,7 +189,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(recent));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
 
-            String reading  = Float.toString(Data.total_distance) + " metres " + Double.toString(Data.duration) + " seconds" ;
+            String reading  = Float.toString(Data.total_distance) + " metres "
+                    + Double.toString(Data.duration) + " seconds" ;
 
             distmet.setText(reading);
             stop_btn.setEnabled(true);
@@ -257,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney , 4));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(5)  , 2000  ,null);

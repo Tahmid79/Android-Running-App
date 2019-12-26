@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mCurrentLocation ;
     boolean  requestingLocationUpdates ;
 
+    Button cancel_btn  ,  save_btn  , stop_btn;
 
     ArrayList<LatLng> cord =  new ArrayList<>() ;
 
@@ -96,19 +99,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         distmet =  (TextView)findViewById(R.id.distMet) ;
 
+        cancel_btn = (Button)findViewById(R.id.cancel_btn);
+        save_btn = (Button)findViewById(R.id.save_btn) ;
+        stop_btn = (Button)findViewById(R.id.stop_btn) ;
+
+        cancel_btn.setVisibility(View.GONE) ;
+        save_btn.setVisibility(View.GONE);
+        stop_btn.setEnabled(false);
+
     }
 
-    public void clearMap(View view){
+    public void stopTracking(View view){
         mService.stopLocationUpdates();
+
+        cancel_btn.setVisibility(View.VISIBLE) ;
+        save_btn.setVisibility(View.VISIBLE);
+
+    }
+
+    public void startTracking(View view){
+        clearMap();
+
+        mService.startLocationUpdates();
+    }
+
+    public void saveTrack(View view){
+
+        ContentValues values = new ContentValues() ;
+
+        values.put("duration" , Data.duration);
+        values.put("date" ,  Data.date) ;
+        values.put("distance" ,  Data.total_distance) ;
+
+        getContentResolver().insert(TrackProvider.CONTENT_URI ,  values) ;
+        clearMap();
+
+        cancel_btn.setVisibility(View.GONE) ;
+        save_btn.setVisibility(View.GONE);
+        stop_btn.setEnabled(false);
+
+    }
+
+    public void cancel(View view){
+        clearMap();
+
+        cancel_btn.setVisibility(View.GONE) ;
+        save_btn.setVisibility(View.GONE);
+        stop_btn.setEnabled(false);
+    }
+
+    public void showTrackRecords(View view){
+        Intent intent = new Intent(this ,  TracksActivity.class) ;
+        startActivity(intent) ;
+
+    }
+
+    public void clearMap(){
+
         mMap.clear();
         Data.total_distance = 0 ;
         Data.loc = new ArrayList<>() ;
         Data.cord = new ArrayList<>() ;
-        distmet.setText("0");
-    }
+        distmet.setText("Not Running");
 
-    public void startTracking(View view){
-        mService.startLocationUpdates();
     }
 
     public class Receiver extends BroadcastReceiver{
@@ -136,8 +189,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String reading  = Float.toString(Data.total_distance) + " metres " + Double.toString(Data.duration) + " seconds" ;
 
             distmet.setText(reading);
-
+            stop_btn.setEnabled(true);
         }
+
+
     }
 
 
@@ -145,6 +200,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
+
+
 
         Intent service =  new Intent(this, LocationService.class) ;
         bindService(service , mServiceConnection , Context.BIND_AUTO_CREATE ) ;
@@ -222,7 +279,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 
-                mService.startLocationUpdates();
+                //mService.startLocationUpdates();
 
             }
         });

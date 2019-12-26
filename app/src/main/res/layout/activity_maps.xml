@@ -46,7 +46,6 @@
         android:layout_width="166dp"
         android:layout_height="100dp"
         android:layout_marginTop="60dp"
-        android:text="TextView"
         android:textSize="24sp"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"

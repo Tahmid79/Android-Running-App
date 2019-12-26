@@ -32,15 +32,15 @@ public class TracksActivity extends AppCompatActivity {
         adapter = new TracksView(this ,  cursor) ;
         adapter.notifyDataSetChanged();
 
-        listView.setAdapter(adapter);
-
+        listView.setAdapter(adapter);           //populate the list view with the items
+                                                //in database
 
     }
 
     public void sortDistance(View view){
 
         cursor = getContentResolver().query(TrackProvider.CONTENT_URI, null , null , null , "distance DESC");
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();         //sort according to longest distance travelled
         adapter.swapCursor(cursor) ;
 
 
@@ -49,7 +49,7 @@ public class TracksActivity extends AppCompatActivity {
     public void sortTime(View view){
         cursor = getContentResolver().query(TrackProvider.CONTENT_URI, null , null , null , "duration ASC");
         adapter.notifyDataSetChanged();
-        adapter.swapCursor(cursor) ;
+        adapter.swapCursor(cursor) ;            //sort according to shortest time taken
 
 
     }

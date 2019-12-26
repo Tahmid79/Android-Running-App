@@ -126,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void saveTrack(View view){
 
-        ContentValues values = new ContentValues() ;
+        ContentValues values = new ContentValues() ;    //saves the track record in the database
 
         values.put("duration" , Data.duration);
         values.put("date" ,  Data.date) ;
@@ -142,7 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void cancel(View view){
-        clearMap();
+        clearMap();         //cancels the current track of the user and does not save it
 
         cancel_btn.setVisibility(View.GONE) ;
         save_btn.setVisibility(View.GONE);
@@ -151,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void showTrackRecords(View view){
         Intent intent = new Intent(this ,  TracksActivity.class) ;
-        startActivity(intent) ;
+        startActivity(intent) ; //goes to a new activity to show all the tracks
 
     }
 
@@ -159,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.clear();
         Data.total_distance = 0 ;
-        Data.loc = new ArrayList<>() ;
+        Data.loc = new ArrayList<>() ;      //clears the map of markers
         Data.cord = new ArrayList<>() ;
         distmet.setText("Not Running");
 
@@ -169,7 +169,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            //receives the broadcasts from the location service periodically
+            //and updates the UI after receiving the location updates
 
             //Location lrecent = intent.getParcelableExtra(LocationService.EXTRA_LOCATION) ;
             //LatLng recent =  new LatLng(lrecent.getLatitude()  ,lrecent.getLongitude() ) ;
@@ -238,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
       NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-      manager.cancelAll();
+      manager.cancelAll(); //destroys the notifications
         super.onDestroy();
     }
 
@@ -291,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         resolvableApiException.startResolutionForResult(MapsActivity.this ,
                                 REQUEST_CHECK_SETTINGS);
-
+                        //requests location permissions if not granted
 
 
                     }catch (IntentSender.SendIntentException sendEx){

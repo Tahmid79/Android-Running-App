@@ -6,6 +6,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+//contains static variables so that data can be retrieved throughout
+//the app's lifecycle
+
 public class Data {
 
     public static ArrayList<LatLng> cord   ;

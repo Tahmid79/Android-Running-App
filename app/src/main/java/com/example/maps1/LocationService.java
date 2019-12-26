@@ -198,8 +198,8 @@ public class LocationService extends Service {
     protected void createLocationRequest(){
 
         locationRequest = LocationRequest.create() ;
-        locationRequest.setInterval(5000)  ;
-        locationRequest.setFastestInterval(1000) ;
+        locationRequest.setInterval(2000)  ;
+        locationRequest.setFastestInterval(500) ;
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY) ;
 
 

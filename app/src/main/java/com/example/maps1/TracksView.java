@@ -39,7 +39,7 @@ public class TracksView extends CursorAdapter {
         String distance = cursor.getString( cursor.getColumnIndex("distance") ) ;
         date = cursor.getString( cursor.getColumnIndex("date")  ) ;
 
-        String reading = "Distance = " + distance+"metres" + "  Duration = "+duration +" seconds";
+        String reading = "Distance = " + distance+" metres" + "\nDuration = "+ duration +" seconds";
 
         ImageView img = (ImageView)view.findViewById(R.id.imageView) ;
         img.setImageResource(R.drawable.rcp);
@@ -59,6 +59,7 @@ public class TracksView extends CursorAdapter {
             @Override
             public void onClick(View view) {
 
+                //Delete track
 
                 String [] ags = { date} ;
                 String sel_clause = "date = ?"  ;

@@ -119,7 +119,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void startTracking(View view){
         clearMap();
-
+        cancel_btn.setVisibility(View.GONE) ;
+        save_btn.setVisibility(View.GONE);
         mService.startLocationUpdates();
     }
 
@@ -192,16 +193,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             stop_btn.setEnabled(true);
         }
 
-
     }
-
 
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
 
         Intent service =  new Intent(this, LocationService.class) ;
         bindService(service , mServiceConnection , Context.BIND_AUTO_CREATE ) ;

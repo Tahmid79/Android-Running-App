@@ -3,6 +3,7 @@ package com.example.maps1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,30 @@ public class TracksActivity extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
+
+    }
+
+    public void sortDistance(View view){
+
+        cursor = getContentResolver().query(TrackProvider.CONTENT_URI, null , null , null , "distance DESC");
+        adapter.notifyDataSetChanged();
+        adapter.swapCursor(cursor) ;
+
+
+    }
+
+    public void sortTime(View view){
+        cursor = getContentResolver().query(TrackProvider.CONTENT_URI, null , null , null , "duration ASC");
+        adapter.notifyDataSetChanged();
+        adapter.swapCursor(cursor) ;
+
+
+    }
+
+    public void goBack(View view){
+        Intent intent = new Intent(this ,  MapsActivity.class) ;
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP) ;
+        startActivity(intent);
 
     }
 
